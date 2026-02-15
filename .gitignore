@@ -1,9 +1,12 @@
 # Node modules
 node_modules/
 server/node_modules/
+client/node_modules/
 
 # Environment files
 .env
+server/.env
+
 
 # Python
 __pycache__/
@@ -11,3 +14,4 @@ venv/
 
 # OS files
 .DS_Store
+

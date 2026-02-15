@@ -6,38 +6,55 @@ function AdminSignIn() {
   // Hardcoded admin details
   const ADMIN_USERNAME = "admin123";
   const ADMIN_PASSWORD = "Admin@123";
-  const ADMIN_MOBILE = "9398523057";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const [otp, setOtp] = useState("");
-  const [generatedOtp, setGeneratedOtp] = useState(null);
   const [step, setStep] = useState("login"); // login or otp
 
-  const handleLogin = () => {
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+const handleLogin = async () => {
 
-      // Generate 6 digit OTP
-      const newOtp = Math.floor(100000 + Math.random() * 900000);
-      setGeneratedOtp(newOtp);
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
 
-      console.log("OTP sent to mobile:", ADMIN_MOBILE);
-      console.log("Generated OTP:", newOtp);
+    try {
+      const res = await fetch("http://localhost:5000/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+          body: JSON.stringify({ username, password }),
+      });
 
-      setStep("otp");
-    } else {
-      alert("Invalid Username or Password");
+      if (res.ok) {
+        setStep("otp");   // move to OTP screen
+      } else {
+        alert("Failed to send OTP");
+      }
+
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      alert("Server error");
     }
-  };
 
-  const verifyOtp = () => {
-    if (parseInt(otp) === generatedOtp) {
-      alert("Admin Login Successful ✅");
-    } else {
-      alert("Invalid OTP ❌");
-    }
-  };
+  } else {
+    alert("Invalid Username or Password");
+  }
+};
+
+const verifyOtp = async () => {
+  const res = await fetch("http://localhost:5000/api/admin/verify-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ otp }),
+  });
+
+  if (res.ok) {
+    alert("Admin Login Successful ✅");
+  } else {
+    alert("Invalid OTP ❌");
+  }
+};
 
   return (
     <div className="auth-container">

@@ -1,0 +1,129 @@
+.landing-container {
+  height: 100vh;
+  width: 100%;
+
+  background-image: url("../../assets/BG.png");
+  background-repeat: no-repeat;
+
+  /* Zoom in slightly */
+  background-size: 99.7%;
+
+  /* Keep logo centered properly */
+  background-position: center;
+
+  background-attachment: center;
+
+  font-family: "Poppins", sans-serif;
+}
+
+/* Dark overlay */
+.overlay {
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Card */
+.card {
+  background: rgba(255, 255, 255, 0.18);   /* transparent */
+  backdrop-filter: blur(14px);             /* glass effect */
+  -webkit-backdrop-filter: blur(14px);
+
+  padding: 42px 38px;
+  border-radius: 18px;
+  width: 400px;
+  text-align: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+  font-family: "Poppins", sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.tagline {
+  font-size: 14px;
+  color: #e5e7eb;
+  margin-bottom: 28px;
+  font-family: "Poppins", sans-serif;
+}
+
+
+/* Subtitle */
+.tagline {
+  font-size: 14px;
+  color: #e5e7eb;
+  margin-bottom: 25px;
+}
+
+/* Role toggle */
+.role-toggle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 30px;
+  padding: 5px;
+}
+
+.toggle {
+  flex: 1;
+  border: none;
+  padding: 11px 0;
+  border-radius: 25px;
+  cursor: pointer;
+  background: transparent;
+  font-weight: 600;
+  color: #111827;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.3s ease;
+}
+
+.toggle.active {
+  background: rgba(37, 99, 235, 0.9);
+  color: #ffffff;
+}
+
+/* Auth buttons */
+.auth-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Buttons */
+.btn {
+  padding: 13px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+}
+
+.btn.primary:hover {
+  opacity: 0.9;
+}
+
+.btn.secondary {
+  background: rgba(255, 255, 255, 0.85);
+  color: #1e40af;
+}

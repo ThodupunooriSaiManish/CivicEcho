@@ -1,7 +1,0 @@
-rtc-transport-issues-analytics 
-  padding: 42px 38px;
-  border-radius: 18px;
-  width: 400px;
-  text-align: center;
-
-  border: 1px solid rgba(255, 255, 255, 0.3);

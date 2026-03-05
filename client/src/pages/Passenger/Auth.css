@@ -63,12 +63,9 @@
   font-size: 14px;
   outline: none;
   box-sizing: border-box;   /* ADD THIS */
+  margin-bottom: 18px;   /* ← THIS handles spacing for all inputs */
 }
-/* Uniform spacing between all fields */
-.auth-card > input,
-.password-wrapper {
-  margin-bottom: 18px;
-}
+
 /* Buttons */
 .auth-btn {
   width: 100%;
@@ -100,7 +97,6 @@
 .password-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 18px;
 }
 
 /* EXACT same styling as normal inputs */

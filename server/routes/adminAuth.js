@@ -5,7 +5,7 @@ const sendOtpMail = require("../utils/sendMail");
 let generatedOtp = null;
 
 const ADMIN_USERNAME = "admin123";
-const ADMIN_PASSWORD = "Admin@123";
+const ADMIN_PASSWORD = "admin@123";
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;

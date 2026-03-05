@@ -5,7 +5,7 @@ function AdminSignIn() {
 
   // Hardcoded admin details
   const ADMIN_USERNAME = "admin123";
-  const ADMIN_PASSWORD = "Admin@123";
+  const ADMIN_PASSWORD = "admin@123";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

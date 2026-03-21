@@ -58,7 +58,12 @@ function PassengerSignIn() {
             Sign In
           </button>
 
-          <p className="forgot-password">Forgot Password?</p>
+          <p
+  className="forgot-password"
+  onClick={() => navigate("/forgot-password")}
+>
+  Forgot Password?
+</p>
 
         </div>
       </div>

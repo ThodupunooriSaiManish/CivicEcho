@@ -4,6 +4,10 @@ import PassengerSignUp from "./pages/Passenger/PassengerSignUp";
 import PassengerSignIn from "./pages/Passenger/PassengerSignIn";
 import AdminSignIn from "./pages/Admin/AdminSignIn";
 import PassengerDashboard from "./pages/Passenger/PassengerDashboard";
+import ForgotPassword from "./pages/Passenger/ForgotPassword";
+import ResetPassword from "./pages/Passenger/ResetPassword";
+
+
 
 function App() {
   return (
@@ -14,6 +18,8 @@ function App() {
         <Route path="/passenger-signin" element={<PassengerSignIn />} />
         <Route path="/admin-signin" element={<AdminSignIn />} />
         <Route path="/passenger-dashboard" element={<PassengerDashboard />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </Router>
   );

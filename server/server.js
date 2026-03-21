@@ -15,7 +15,7 @@ app.use(express.json());
 // Routes
 app.use("/api/admin", require("./routes/adminAuth"));
 app.use("/api/passenger", require("./routes/passengerAuth"));
-
+app.use("/api/caption", require("./routes/caption"));
 // Server start
 const PORT = 5000;
 

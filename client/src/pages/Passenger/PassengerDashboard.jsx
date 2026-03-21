@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./PassengerDashboard.css";
-import { useEffect } from "react";
 
 function PassengerDashboard() {
 
@@ -8,12 +7,74 @@ function PassengerDashboard() {
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [username, setUsername] = useState("");
 
-useEffect(() => {
-  const user = JSON.parse(localStorage.getItem("passenger"));
-  if (user) {
-    setUsername(user.username);
-  }
-}, []);
+  const [file, setFile] = useState(null);
+  const [caption, setCaption] = useState("");
+
+  const [mode, setMode] = useState("");
+  const [dataType, setDataType] = useState("");
+  const [description, setDescription] = useState("");
+
+  const [complaints, setComplaints] = useState([]);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("passenger"));
+    if (user) {
+      setUsername(user.username);
+    }
+  }, []);
+
+  // Upload file → get AI caption
+  const handleFileUpload = async (e) => {
+
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+
+    setFile(selectedFile);
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    const res = await fetch("http://localhost:5000/api/caption", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    setCaption(data.caption);
+  };
+
+  // Submit complaint
+  const handleSubmitComplaint = async () => {
+
+    const formData = new FormData();
+
+    formData.append("username", username);
+    formData.append("mode", mode);
+    formData.append("dataType", dataType);
+    formData.append("description", description);
+    formData.append("caption", caption);
+
+    if (file) {
+      formData.append("file", file);
+    }
+
+    const res = await fetch("http://localhost:5000/api/complaints/submit", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    alert(data.message);
+
+    // Reset fields
+    setMode("");
+    setDataType("");
+    setDescription("");
+    setCaption("");
+    setFile(null);
+  };
 
   return (
     <div className="dashboard">
@@ -37,20 +98,21 @@ useEffect(() => {
         </button>
 
         <div className="user-info">
-        <p>Welcome</p>
-            <h4>{username}</h4>
+          <p>Welcome</p>
+          <h4>{username}</h4>
         </div>
 
-    <button
-    className="logout"
-    onClick={() => {
-        localStorage.removeItem("passenger");
-        window.location.href = "/";
-    }}
-    >
-  Logout
-</button>   
-    </div>
+        <button
+          className="logout"
+          onClick={() => {
+            localStorage.removeItem("passenger");
+            window.location.href = "/";
+          }}
+        >
+          Logout
+        </button>
+      </div>
+
 
       {/* Main Content */}
       <div className="main-content">
@@ -60,25 +122,45 @@ useEffect(() => {
 
             <h2>Submit Complaint</h2>
 
-            <select>
-              <option>Mode of Transport</option>
+            <select
+              value={mode}
+              onChange={(e) => setMode(e.target.value)}
+            >
+              <option value="">Mode of Transport</option>
               <option>RTC Bus</option>
               <option>Metro</option>
               <option>MMTS</option>
             </select>
 
-            <select>
-              <option>Type of Data</option>
+            <select
+              value={dataType}
+              onChange={(e) => setDataType(e.target.value)}
+            >
+              <option value="">Type of Data</option>
               <option>Text</option>
               <option>Photo</option>
               <option>Video</option>
             </select>
 
-            <input type="file" />
+            <input type="file" onChange={handleFileUpload} />
 
-            <textarea placeholder="Describe the issue..." />
+            {caption && (
+              <div className="ai-caption">
+                <b>AI Generated Caption:</b>
+                <p>{caption}</p>
+              </div>
+            )}
 
-            <button className="submit-btn">
+            <textarea
+              placeholder="Describe the issue..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+
+            <button
+              className="submit-btn"
+              onClick={handleSubmitComplaint}
+            >
               Submit Complaint
             </button>
 
@@ -99,20 +181,30 @@ useEffect(() => {
                 </tr>
               </thead>
 
-                <tbody>
-  <tr>
-    <td colSpan="3" style={{ textAlign: "center", padding: "20px" }}>
-      No complaints submitted yet
-    </td>
-  </tr>
-</tbody>
+              <tbody>
+                {complaints.length === 0 ? (
+                  <tr>
+                    <td colSpan="3" style={{ textAlign: "center", padding: "20px" }}>
+                      No complaints submitted yet
+                    </td>
+                  </tr>
+                ) : (
+                  complaints.map((c, index) => (
+                    <tr key={index}>
+                      <td>{c._id}</td>
+                      <td>{c.mode}</td>
+                      <td>{c.status}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+
             </table>
 
           </div>
         )}
 
       </div>
-
 
       {/* Complaint Details Panel */}
       {selectedComplaint && (

@@ -13,6 +13,7 @@ function PassengerDashboard() {
   const [mode, setMode] = useState("");
   const [dataType, setDataType] = useState("");
   const [description, setDescription] = useState("");
+  const [issue,setIssue]=useState("");
 
   const [complaints, setComplaints] = useState([]);
 
@@ -22,6 +23,16 @@ function PassengerDashboard() {
       setUsername(user.username);
     }
   }, []);
+
+  useEffect(() => {
+  if (activeTab === "complaints") {
+
+    fetch(`http://localhost:5000/api/complaints/${username}`)
+      .then(res => res.json())
+      .then(data => setComplaints(data));
+
+  }
+}, [activeTab, username]);
 
   // Upload file → get AI caption
   const handleFileUpload = async (e) => {
@@ -42,6 +53,8 @@ function PassengerDashboard() {
     const data = await res.json();
 
     setCaption(data.caption);
+    setIssue(data.issue);   
+
   };
 
   // Submit complaint
@@ -54,6 +67,7 @@ function PassengerDashboard() {
     formData.append("dataType", dataType);
     formData.append("description", description);
     formData.append("caption", caption);
+    formData.append("issue", issue);
 
     if (file) {
       formData.append("file", file);
@@ -72,6 +86,7 @@ function PassengerDashboard() {
     setMode("");
     setDataType("");
     setDescription("");
+    setIssue("");
     setCaption("");
     setFile(null);
   };
@@ -177,27 +192,60 @@ function PassengerDashboard() {
                 <tr>
                   <th>ID</th>
                   <th>Transport</th>
+                  <th>Issue</th>
                   <th>Status</th>
                 </tr>
               </thead>
 
-              <tbody>
-                {complaints.length === 0 ? (
-                  <tr>
-                    <td colSpan="3" style={{ textAlign: "center", padding: "20px" }}>
-                      No complaints submitted yet
-                    </td>
-                  </tr>
-                ) : (
-                  complaints.map((c, index) => (
-                    <tr key={index}>
-                      <td>{c._id}</td>
-                      <td>{c.mode}</td>
-                      <td>{c.status}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
+             <tbody>
+  {complaints.length === 0 ? (
+    <tr>
+      <td colSpan="4" style={{ textAlign: "center", padding: "20px" }}>
+        No complaints submitted yet
+      </td>
+    </tr>
+  ) : (
+    complaints.map((c, index) => (
+      <tr key={index}>
+        <td>{c._id.slice(-5)}</td>
+
+        {/* Transport */}
+        <td>{c.mode || "N/A"}</td>
+
+        {/* Issue (with color) */}
+        <td
+          style={{
+            color:
+              c.issue === "Overcrowding"
+                ? "orange"
+                : c.issue === "Safety Issue"
+                ? "red"
+                : c.issue === "Cleanliness Issue"
+                ? "green"
+                : "white"
+          }}
+        >
+          {c.issue || "General"}
+        </td>
+
+        {/* Status (with color) */}
+        <td
+          style={{
+            color:
+              c.status === "Pending"
+                ? "red"
+                : c.status === "Resolved"
+                ? "lightgreen"
+                : "white"
+          }}
+        >
+          {c.status}
+        </td>
+
+      </tr>
+    ))
+  )}
+</tbody>
 
             </table>
 

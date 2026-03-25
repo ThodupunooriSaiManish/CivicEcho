@@ -63,5 +63,24 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Update complaint status
+router.put("/update/:id", async (req, res) => {
+
+  try {
+    const { status } = req.body;
+
+    await Complaint.findByIdAndUpdate(
+      req.params.id,
+      { status }
+    );
+
+    res.json({ message: "Status updated successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+
+});
 
 module.exports = router;

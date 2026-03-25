@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";   // ✅ ADD THIS
 import "./AdminAuth.css";
 
 function AdminSignIn() {
+
+  const navigate = useNavigate();   // ✅ ADD THIS
 
   // Hardcoded admin details
   const ADMIN_USERNAME = "admin123";
@@ -11,50 +14,54 @@ function AdminSignIn() {
   const [password, setPassword] = useState("");
 
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState("login"); // login or otp
+  const [step, setStep] = useState("login");
 
-const handleLogin = async () => {
+  const handleLogin = async () => {
 
-  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
 
-    try {
-      const res = await fetch("http://localhost:5000/api/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      try {
+        const res = await fetch("http://localhost:5000/api/admin/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ username, password }),
-      });
+        });
 
-      if (res.ok) {
-        setStep("otp");   // move to OTP screen
-      } else {
-        alert("Failed to send OTP");
+        if (res.ok) {
+          setStep("otp");   // move to OTP screen
+        } else {
+          alert("Failed to send OTP");
+        }
+
+      } catch (error) {
+        console.error("Error sending OTP:", error);
+        alert("Server error");
       }
 
-    } catch (error) {
-      console.error("Error sending OTP:", error);
-      alert("Server error");
+    } else {
+      alert("Invalid Username or Password");
     }
+  };
 
-  } else {
-    alert("Invalid Username or Password");
-  }
-};
+  const verifyOtp = async () => {
 
-const verifyOtp = async () => {
-  const res = await fetch("http://localhost:5000/api/admin/verify-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ otp }),
-  });
+    const res = await fetch("http://localhost:5000/api/admin/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ otp }),
+    });
 
-  if (res.ok) {
-    alert("Admin Login Successful ✅");
-  } else {
-    alert("Invalid OTP ❌");
-  }
-};
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(data.message || "Login successful");
+      navigate("/admin-dashboard");   // ✅ NOW WORKS
+    } else {
+      alert(data.message || "Invalid OTP ❌");
+    }
+  };
 
   return (
     <div className="auth-container">

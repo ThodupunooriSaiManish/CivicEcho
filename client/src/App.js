@@ -7,6 +7,7 @@ import PassengerDashboard from "./pages/Passenger/PassengerDashboard";
 import ForgotPassword from "./pages/Passenger/ForgotPassword";
 import ResetPassword from "./pages/Passenger/ResetPassword";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminAnalytics from "./pages/Admin/AdminAnalytics";
 
 
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/admin-analytics" element={<AdminAnalytics />} />
       </Routes>
     </Router>
   );

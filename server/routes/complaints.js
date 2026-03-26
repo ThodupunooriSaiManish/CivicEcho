@@ -1,9 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const Complaint = require("../models/Complaint");
-const multer = require("multer");
 
-const upload = multer({ dest: "uploads/" });
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
+
+// ✅ Cloudinary Storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "complaints",
+    allowed_formats: ["jpg", "png", "jpeg", "mp4"]
+  }
+});
+
+// ✅ Use ONLY this upload
+const upload = multer({ storage });
 
 
 // ✅ STEP 2 — Submit Complaint
@@ -12,14 +25,17 @@ router.post("/submit", upload.single("file"), async (req, res) => {
   try {
     const { username, mode, dataType, description, caption, issue } = req.body;
 
-    const filePath = req.file ? req.file.path : "";
+    // ✅ Cloudinary gives URL here
+    const fileUrl = req.file ? req.file.path : "";
+
     const newComplaint = new Complaint({
       username,
       mode,
       dataType,
       description,
       caption,
-      issue
+      issue,
+      file: fileUrl   // ✅ IMPORTANT (store URL)
     });
 
     await newComplaint.save();
@@ -34,7 +50,7 @@ router.post("/submit", upload.single("file"), async (req, res) => {
 });
 
 
-// ✅ STEP 3 — Fetch Complaints (PASTE HERE)
+// ✅ STEP 3 — Fetch Complaints (User)
 router.get("/:username", async (req, res) => {
 
   try {
@@ -52,7 +68,8 @@ router.get("/:username", async (req, res) => {
 
 });
 
-// Get ALL complaints (Admin)
+
+// ✅ Get ALL complaints (Admin)
 router.get("/", async (req, res) => {
   try {
     const complaints = await Complaint.find().sort({ createdAt: -1 });
@@ -63,7 +80,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Update complaint status
+
+// ✅ Update complaint status
 router.put("/update/:id", async (req, res) => {
 
   try {

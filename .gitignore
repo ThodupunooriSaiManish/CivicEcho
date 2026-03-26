@@ -15,3 +15,6 @@ venv/
 # OS files
 .DS_Store
 
+# Server folders
+server/uploads/
+server/config/

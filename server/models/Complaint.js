@@ -1,4 +1,3 @@
-const multer = require("multer");
 const mongoose = require("mongoose");
 
 const complaintSchema = new mongoose.Schema({
@@ -8,10 +7,15 @@ const complaintSchema = new mongoose.Schema({
   description: String,
   caption: String,
   issue: String,
+
+  // ✅ ADD THIS (VERY IMPORTANT)
+  file: String,
+
   status: {
     type: String,
     default: "Pending"
   },
+
   createdAt: {
     type: Date,
     default: Date.now

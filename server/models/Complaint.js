@@ -1,15 +1,42 @@
 const mongoose = require("mongoose");
 
 const complaintSchema = new mongoose.Schema({
-  username: String,
-  mode: String,
-  dataType: String,
-  description: String,
-  caption: String,
-  issue: String,
+  username: {
+    type: String,
+    required: true
+  },
 
-  // ✅ ADD THIS (VERY IMPORTANT)
-  file: String,
+  // Transport (Bus / Train)
+  mode: {
+    type: String,
+    required: true
+  },
+
+  dataType: {
+    type: String
+  },
+
+  description: {
+    type: String
+  },
+
+  // Issue from DL model
+  issue: {
+    type: String,
+    required: true
+  },
+
+  // File (image/video path)
+  file: {
+    type: String,
+    required: true
+  },
+
+  // Confidence (store as number, not string)
+  confidence: {
+    type: Number,
+    default: 90
+  },
 
   status: {
     type: String,

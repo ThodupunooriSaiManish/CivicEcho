@@ -218,14 +218,16 @@ function PassengerDashboard() {
             color:
               c.issue === "Overcrowding"
                 ? "orange"
-                : c.issue === "Safety Issue"
+                :c.issue === "Delay Issue"
+                ? "blue"
+                : c.issue === "Safety Issue" || c.issue === "Safety"
                 ? "red"
                 : c.issue === "Cleanliness Issue"
                 ? "green"
-                : "white"
+                : "dark yellow"
           }}
         >
-          {c.issue || "General"}
+          {c.issue }
         </td>
 
         {/* Status (with color) */}

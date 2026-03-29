@@ -3,58 +3,72 @@ const router = express.Router();
 const Complaint = require("../models/Complaint");
 
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("../config/cloudinary");
+const { exec } = require("child_process");
 
-// ✅ Cloudinary Storage
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "complaints",
-    allowed_formats: ["jpg", "png", "jpeg", "mp4"]
-  }
-});
+// ✅ SIMPLE LOCAL STORAGE (BEST FOR YOU NOW)
+const upload = multer({ dest: "uploads/" });
 
-// ✅ Use ONLY this upload
-const upload = multer({ storage });
-
-
-// ✅ STEP 2 — Submit Complaint
+// ================================
+// ✅ SUBMIT COMPLAINT (FINAL)
+// ================================
 router.post("/submit", upload.single("file"), async (req, res) => {
-
   try {
-    const { username, mode, dataType, description, caption, issue } = req.body;
+    const { username, dataType, description } = req.body;
 
-    // ✅ Cloudinary gives URL here
-    const fileUrl = req.file ? req.file.path : "";
+    // ✅ CHECK FILE
+    if (!req.file) {
+      return res.status(400).json({ message: "File not uploaded" });
+    }
 
-    const newComplaint = new Complaint({
-      username,
-      mode,
-      dataType,
-      description,
-      caption,
-      issue,
-      file: fileUrl   // ✅ IMPORTANT (store URL)
+    const filePath = req.file.path;
+
+    // ================================
+    // 🧠 CALL DL MODEL
+    // ================================
+    exec(`python dl_model.py "${filePath}"`, async (err, stdout, stderr) => {
+      if (err) {
+        console.error("DL Error:", err);
+        return res.status(500).json({ message: "AI Error" });
+      }
+
+      const output = stdout.trim().split("|");
+
+      const issue = output[0] || "General Issue";
+      const transport = output[1] || "Bus";
+
+      // (optional)
+      const confidence = output[2] || "90";
+
+      // ================================
+      // 💾 SAVE TO DB
+      // ================================
+      const newComplaint = new Complaint({
+        username,
+        mode: transport,
+        dataType,
+        description,
+        issue,
+        confidence,
+        file: filePath, // ✅ store local path
+        status: "Pending"
+      });
+
+      await newComplaint.save();
+
+      res.json({ message: "Complaint submitted successfully" });
     });
-
-    await newComplaint.save();
-
-    res.json({ message: "Complaint submitted successfully" });
 
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
-
 });
 
-
-// ✅ STEP 3 — Fetch Complaints (User)
+// ================================
+// ✅ USER COMPLAINTS
+// ================================
 router.get("/:username", async (req, res) => {
-
   try {
-
     const complaints = await Complaint.find({
       username: req.params.username
     });
@@ -65,11 +79,11 @@ router.get("/:username", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
-
 });
 
-
-// ✅ Get ALL complaints (Admin)
+// ================================
+// ✅ ADMIN - ALL COMPLAINTS
+// ================================
 router.get("/", async (req, res) => {
   try {
     const complaints = await Complaint.find().sort({ createdAt: -1 });
@@ -80,17 +94,14 @@ router.get("/", async (req, res) => {
   }
 });
 
-
-// ✅ Update complaint status
+// ================================
+// ✅ UPDATE STATUS
+// ================================
 router.put("/update/:id", async (req, res) => {
-
   try {
     const { status } = req.body;
 
-    await Complaint.findByIdAndUpdate(
-      req.params.id,
-      { status }
-    );
+    await Complaint.findByIdAndUpdate(req.params.id, { status });
 
     res.json({ message: "Status updated successfully" });
 
@@ -98,7 +109,6 @@ router.put("/update/:id", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
-
 });
 
 module.exports = router;

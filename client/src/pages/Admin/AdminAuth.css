@@ -21,6 +21,7 @@
   justify-content: center;
   gap: 40px;
   flex-wrap: wrap;
+  align-items: flex-start;   /* ✅ prevents stretching */
 }
 
 /* ===== CARD ===== */
@@ -28,13 +29,16 @@
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
 
-  padding: 25px;
+  padding: 30px;
   border-radius: 18px;
 
   border: 1px solid rgba(255,255,255,0.08);
   box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 
   transition: 0.3s;
+
+  width: 480px;        /* ✅ FIX WIDTH */
+  min-height: 420px;   /* ✅ FIX HEIGHT */
 }
 
 .analytics-card:hover {
@@ -56,4 +60,10 @@
 /* TOOLTIP */
 .recharts-tooltip-wrapper {
   font-size: 13px;
+}
+
+.recharts-legend-wrapper {
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
 }

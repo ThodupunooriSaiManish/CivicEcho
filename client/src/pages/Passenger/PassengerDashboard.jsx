@@ -143,8 +143,7 @@ function PassengerDashboard() {
             >
               <option value="">Mode of Transport</option>
               <option>RTC Bus</option>
-              <option>Metro</option>
-              <option>MMTS</option>
+              <option>Train</option>
             </select>
 
             <select
@@ -222,7 +221,7 @@ function PassengerDashboard() {
                 ? "blue"
                 : c.issue === "Safety Issue" || c.issue === "Safety"
                 ? "red"
-                : c.issue === "Cleanliness Issue"
+                : c.issue === "Cleanliness"
                 ? "green"
                 : "dark yellow"
           }}

@@ -15,6 +15,8 @@ app.use("/api/admin", require("./routes/adminAuth"));
 app.use("/api/passenger", require("./routes/passengerAuth"));
 app.use("/api/complaints", require("./routes/complaints"));
 app.use("/uploads", express.static("uploads"));
+app.use("/api/admin", adminRoutes);
+
 
 // MongoDB
 mongoose.connect("mongodb://127.0.0.1:27017/rtc_transport_issues")

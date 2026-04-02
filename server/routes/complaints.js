@@ -6,7 +6,14 @@ const multer = require("multer");
 const { exec } = require("child_process");
 
 // ✅ SIMPLE LOCAL STORAGE (BEST FOR YOU NOW)
-const upload = multer({ dest: "uploads/" });
+const storage = multer.diskStorage({
+  destination: "uploads/",
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
 
 // ================================
 // ✅ SUBMIT COMPLAINT (FINAL)

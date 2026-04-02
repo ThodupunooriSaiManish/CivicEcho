@@ -3,11 +3,13 @@ import {
   PieChart, Pie, Cell, Tooltip, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from "recharts";
+import { useNavigate } from "react-router-dom";   // ✅ ADD THIS
 import "./AdminAuth.css";
 
 function AdminAnalytics() {
 
   const [data, setData] = useState([]);
+  const navigate = useNavigate();   // ✅ ADD THIS
 
   useEffect(() => {
     fetch("http://localhost:5000/api/complaints")
@@ -16,26 +18,43 @@ function AdminAnalytics() {
   }, []);
 
   // ================= PIE CHART =================
-  // 🔥 mode + issue (gives all categories like 8 types)
+
+  const allCategories = [
+    "Bus - Overcrowding",
+    "Bus - Cleanliness Issue",
+    "Bus - Safety Issue",
+    "Bus - Delay Issue",
+    "Train - Overcrowding",
+    "Train - Cleanliness Issue",
+    "Train - Safety Issue",
+    "Train - Delay Issue"
+  ];
+
   const categoryCount = {};
+
+  allCategories.forEach(cat => {
+    categoryCount[cat] = 0;
+  });
 
   data.forEach(c => {
     let issue = c.issue;
 
-    // normalize
     if (issue === "Safety") issue = "Safety Issue";
 
     const key = `${c.mode} - ${issue}`;
-    categoryCount[key] = (categoryCount[key] || 0) + 1;
+
+    if (categoryCount[key] !== undefined) {
+      categoryCount[key]++;
+    }
   });
 
-  const pieData = Object.keys(categoryCount).map(key => ({
-    name: key,
-    value: categoryCount[key]
-  }));
+  const pieData = Object.keys(categoryCount)
+    .map(key => ({
+      name: key,
+      value: categoryCount[key]
+    }));
 
   // ================= BAR GRAPH =================
-  // 🔥 only issue-wise comparison
   const issueCount = {};
 
   data.forEach(c => {
@@ -65,7 +84,23 @@ function AdminAnalytics() {
   return (
     <div className="analytics-container">
 
-      <h2>📊 Analytics Dashboard</h2>
+      {/* ✅ BACK BUTTON */}
+      <button
+        onClick={() => navigate("/admin-dashboard")}
+        style={{
+          marginBottom: "20px",
+          padding: "8px 16px",
+          borderRadius: "8px",
+          border: "none",
+          background: "#3b82f6",
+          color: "white",
+          cursor: "pointer"
+        }}
+      >
+        ⬅ Back to Dashboard
+      </button>
+
+      <h2> Analytics Dashboard</h2>
 
       <div className="analytics-grid">
 
@@ -73,14 +108,18 @@ function AdminAnalytics() {
         <div className="analytics-card">
           <h3>Transport + Issue Distribution</h3>
 
-          <PieChart width={350} height={320}>
+          <PieChart width={520} height={380}>
             <Pie
               data={pieData}
               dataKey="value"
               cx="50%"
               cy="50%"
-              outerRadius={120}
-              label
+              outerRadius={110}
+              labelLine={false}
+              label={({ name, percent }) => {
+                const issue = name.split("-")[1]?.trim();
+                return `${issue} ${(percent * 100).toFixed(0)}%`;
+              }}
             >
               {pieData.map((entry, index) => (
                 <Cell key={index} fill={COLORS[index % COLORS.length]} />
@@ -88,7 +127,7 @@ function AdminAnalytics() {
             </Pie>
 
             <Tooltip />
-            <Legend />
+            <Legend verticalAlign="bottom" height={60} />
           </PieChart>
         </div>
 
@@ -96,18 +135,26 @@ function AdminAnalytics() {
         <div className="analytics-card">
           <h3>Issue Comparison</h3>
 
-          <BarChart width={450} height={320} data={barData}>
+          <BarChart width={500} height={380} data={barData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
 
-            <XAxis dataKey="name" stroke="#cbd5f5" />
-            <YAxis stroke="#cbd5f5" />
+            <XAxis
+              dataKey="name"
+              stroke="#cbd5f5"
+              tick={{ fontSize: 13 }}
+            />
+
+            <YAxis
+              stroke="#cbd5f5"
+              allowDecimals={false}
+            />
 
             <Tooltip />
 
             <Bar
               dataKey="value"
               fill="#3b82f6"
-              radius={[8, 8, 0, 0]}
+              radius={[10, 10, 0, 0]}
             />
           </BarChart>
         </div>

@@ -44,8 +44,7 @@ router.post("/submit", upload.single("file"), async (req, res) => {
       const transport = output[1] || "Bus";
 
       // (optional)
-      const confidence = output[2] || "90";
-
+      const confidence = output[2] ? parseFloat(output[2]) : 0;
       // ================================
       // 💾 SAVE TO DB
       // ================================

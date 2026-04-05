@@ -92,7 +92,7 @@ function PassengerDashboard() {
   };
 
   return (
-    <div className="dashboard">
+    <div className="passenger-dashboard">
 
       {/* Sidebar */}
       <div className="sidebar">
@@ -158,13 +158,6 @@ function PassengerDashboard() {
 
             <input type="file" onChange={handleFileUpload} />
 
-            {caption && (
-              <div className="ai-caption">
-                <b>AI Generated Caption:</b>
-                <p>{caption}</p>
-              </div>
-            )}
-
             <textarea
               placeholder="Describe the issue..."
               value={description}
@@ -223,7 +216,7 @@ function PassengerDashboard() {
                 ? "red"
                 : c.issue === "Cleanliness"
                 ? "green"
-                : "dark yellow"
+                : "gold"
           }}
         >
           {c.issue }

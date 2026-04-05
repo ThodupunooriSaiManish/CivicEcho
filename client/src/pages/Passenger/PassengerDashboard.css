@@ -1,4 +1,4 @@
-.dashboard {
+.passenger-dashboard {
   display: flex;
   height: 100vh;
   font-family: "Poppins", sans-serif;
@@ -7,7 +7,7 @@
 
 /* Sidebar */
 
-.sidebar {
+.passenger-dashboard .sidebar {
   width: 240px;
   background: #111827;
   color: white;
@@ -65,14 +65,14 @@
 
 /* Main Content */
 
-.main-content {
+.passenger-dashboard .main-content {
   flex: 1;
   padding: 40px;
 }
 
 /* Panel */
 
-.panel {
+.passenger-dashboard .panel {
   background: white;
   padding: 35px;
   border-radius: 10px;
@@ -110,25 +110,25 @@
 
 /* Table */
 
-table {
+.passenger-dashboard table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
 
-th {
+.passenger-dashboard th {
   text-align: left;
   padding: 12px;
   background: #f3f4f6;
   font-weight: 600;
 }
 
-td {
+.passenger-dashboard td {
   padding: 12px;
   border-bottom: 1px solid #eee;
 }
 
-tr:hover {
+.passenger-dashboard tr:hover {
   background: #f9fafb;
 }
 
@@ -142,24 +142,9 @@ tr:hover {
 
 /* Complaint Details Panel */
 
-.details {
+.passenger-dashboard .details {
   width: 320px;
   background: white;
   padding: 30px;
   border-left: 1px solid #e5e7eb;
-}
-
-.ai-caption{
-margin-top:15px;
-padding:15px;
-background:#f1f5f9;
-border-radius:8px;
-}
-
-.ai-caption h4{
-margin-bottom:5px;
-}
-
-.ai-caption p{
-color:#333;
 }

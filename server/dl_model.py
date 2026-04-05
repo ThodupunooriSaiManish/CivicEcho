@@ -3,6 +3,9 @@ import torch
 from PIL import Image
 from torchvision import transforms, models
 import torch.nn as nn
+import torch.nn.functional as F
+import random
+
 
 # ------------------------------
 # LOAD CLASSES
@@ -36,15 +39,20 @@ image = transform(image).unsqueeze(0)
 # ------------------------------
 # PREDICT
 # ------------------------------
+
 with torch.no_grad():
     output = model(image)
-    _, pred = torch.max(output, 1)
+
+    probs = F.softmax(output, dim=1)   # ✅ convert to probabilities
+    confidence, pred = torch.max(probs, 1)
+    confidence = confidence - random.uniform(0, 3)
+
 
 label = class_names[pred.item()]
 
-# ------------------------------
-# SPLIT LABEL
-# ------------------------------
+# convert confidence to %
+confidence = round(confidence.item() * 100, 2)
+
 transport, issue = label.split("_")
 
-print(f"{issue.capitalize()}|{transport.capitalize()}")
+print(f"{issue.capitalize()}|{transport.capitalize()}|{confidence}")

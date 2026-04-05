@@ -15,7 +15,7 @@ app.use("/api/admin", require("./routes/adminAuth"));
 app.use("/api/passenger", require("./routes/passengerAuth"));
 app.use("/api/complaints", require("./routes/complaints"));
 app.use("/uploads", express.static("uploads"));
-app.use("/api/admin", adminRoutes);
+app.use("/api/admin", require("./routes/adminRoutes"));
 
 
 // MongoDB

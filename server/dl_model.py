@@ -45,7 +45,6 @@ with torch.no_grad():
 
     probs = F.softmax(output, dim=1)   # ✅ convert to probabilities
     confidence, pred = torch.max(probs, 1)
-    confidence = confidence - random.uniform(0, 3)
 
 
 label = class_names[pred.item()]

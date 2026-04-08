@@ -37,6 +37,7 @@ const complaintSchema = new mongoose.Schema({
     type: Number,
     default: 90
   },
+  priority: Number,
 
   status: {
     type: String,

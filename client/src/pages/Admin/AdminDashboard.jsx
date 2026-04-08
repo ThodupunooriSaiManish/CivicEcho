@@ -6,6 +6,7 @@ function AdminDashboard() {
 
   const [complaints, setComplaints] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState(null);
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
   const navigate = useNavigate();
 
   // 🔹 Fetch complaints
@@ -92,7 +93,10 @@ function AdminDashboard() {
                   <th>ID</th>
                   <th>User</th>
                   <th>Transport</th>
+                  <th>Time</th>
+                  <th>Created</th>
                   <th>Confidence</th>
+                  <th>Priority</th>
                   <th>Media</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -100,31 +104,57 @@ function AdminDashboard() {
               </thead>
 
               <tbody>
-                {grouped[selectedIssue].map((c, index) => (
+                {grouped[selectedIssue]?.map((c, index) => (
                   <tr key={index}>
                     <td>{c._id.slice(-5)}</td>
                     <td>{c.username}</td>
                     <td>{c.mode}</td>
+                    <td>
+  {new Date(c.createdAt).toLocaleString()}
+</td>
+<td>
+  {Math.floor((new Date() - new Date(c.createdAt)) / (1000 * 60))} mins ago
+</td>
 
                     {/* CONFIDENCE */}
                     <td>{c.confidence ? `${c.confidence}%` : "—"}</td>
+                    <td
+  style={{
+    color:
+      c.priority >= 90
+        ? "#ef4444"   // red
+        : c.priority >= 70
+        ? "#f59e0b"   // orange
+        : "#22c55e",  // green
+    fontWeight: "600"
+  }}
+>
+  {c.priority || "—"}
+</td>
 
                     {/* MEDIA */}
                     <td>
-                      {c.file && (
-                        c.file.endsWith(".mp4") ? (
-                          <video width="80" controls>
-                            <source src={`http://localhost:5000/${c.file}`} />
-                          </video>
-                        ) : (
-                          <img
-                            src={`http://localhost:5000/${c.file}`}
-                            alt=""
-                            width="80"
-                          />
-                        )
-                      )}
-                    </td>
+  {c.file && (
+    c.file.endsWith(".mp4") ? (
+      <video
+        width="80"
+        onClick={() => setSelectedComplaint(c)}
+        style={{ cursor: "pointer" }}
+      >
+        <source src={`http://localhost:5000/${c.file}`} />
+      </video>
+    ) : (
+      <img
+        src={`http://localhost:5000/${c.file}`}
+        alt=""
+        width="80"
+        onClick={() => setSelectedComplaint(c)}  // ✅ THIS WAS MISSING
+        style={{ cursor: "pointer" }}
+      />
+    )
+  )}
+</td>
+
 
                     {/* STATUS */}
                     <td className={c.status === "Pending" ? "status-pending" : "status-resolved"}>
@@ -148,8 +178,74 @@ function AdminDashboard() {
               </tbody>
             </table>
           </>
+          
         )}
+{selectedComplaint && (
+  <div
+    className="modal-overlay"
+    onClick={() => setSelectedComplaint(null)}
+  >
+    <div
+      className="modal-content"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="modal-media">
+        {selectedComplaint.file.endsWith(".mp4") ? (
+          <video controls>
+            <source src={`http://localhost:5000/${selectedComplaint.file}`} />
+          </video>
+        ) : (
+          <img
+            src={`http://localhost:5000/${selectedComplaint.file}`}
+            alt=""
+          />
+        )}
+      </div>
 
+      <div className="modal-body">
+  <h2>Complaint Details</h2>
+
+  <p><b>User:</b> {selectedComplaint.username}</p>
+  <p><b>Transport:</b> {selectedComplaint.mode}</p>
+  <p><b>Issue:</b> {selectedComplaint.issue}</p>
+
+  <p><b>Time:</b> {new Date(selectedComplaint.createdAt).toLocaleString()}</p>
+
+  <p>
+    <b>Elapsed:</b>{" "}
+    {Math.floor((new Date() - new Date(selectedComplaint.createdAt)) / (1000 * 60))} mins ago
+  </p>
+
+  <p><b>Confidence:</b> {selectedComplaint.confidence || "—"}%</p>
+
+  <p>
+    <b>Priority:</b>{" "}
+    <span
+      style={{
+        color:
+          selectedComplaint.priority >= 90
+            ? "#ef4444"
+            : selectedComplaint.priority >= 70
+            ? "#f59e0b"
+            : "#22c55e",
+        fontWeight: "600"
+      }}
+    >
+      {selectedComplaint.priority || "—"}
+    </span>
+  </p>
+
+  <p><b>Status:</b> {selectedComplaint.status}</p>
+
+  <p><b>Description:</b> {selectedComplaint.description || "No description"}</p>
+
+  <button onClick={() => setSelectedComplaint(null)}>
+    Close
+  </button>
+</div>
+    </div>
+  </div>
+)}
       </div>
     </div>
   );

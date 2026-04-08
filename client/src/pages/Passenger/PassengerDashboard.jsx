@@ -13,10 +13,11 @@ function PassengerDashboard() {
   const [mode, setMode] = useState("");
   const [dataType, setDataType] = useState("");
   const [description, setDescription] = useState("");
-  const [issue,setIssue]=useState("");
+  const [issue, setIssue] = useState("");
 
   const [complaints, setComplaints] = useState([]);
 
+  // 🔹 Get user
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("passenger"));
     if (user) {
@@ -24,19 +25,17 @@ function PassengerDashboard() {
     }
   }, []);
 
+  // 🔹 Fetch complaints
   useEffect(() => {
-  if (activeTab === "complaints") {
+    if (activeTab === "complaints") {
+      fetch(`http://localhost:5000/api/complaints/${username}`)
+        .then(res => res.json())
+        .then(data => setComplaints(data));
+    }
+  }, [activeTab, username]);
 
-    fetch(`http://localhost:5000/api/complaints/${username}`)
-      .then(res => res.json())
-      .then(data => setComplaints(data));
-
-  }
-}, [activeTab, username]);
-
-  // Upload file → get AI caption
+  // 🔹 Upload file
   const handleFileUpload = async (e) => {
-
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
@@ -53,13 +52,11 @@ function PassengerDashboard() {
     const data = await res.json();
 
     setCaption(data.caption);
-    setIssue(data.issue);   
-
+    setIssue(data.issue);
   };
 
-  // Submit complaint
+  // 🔹 Submit complaint
   const handleSubmitComplaint = async () => {
-
     const formData = new FormData();
 
     formData.append("username", username);
@@ -82,7 +79,7 @@ function PassengerDashboard() {
 
     alert(data.message);
 
-    // Reset fields
+    // Reset
     setMode("");
     setDataType("");
     setDescription("");
@@ -128,10 +125,10 @@ function PassengerDashboard() {
         </button>
       </div>
 
-
       {/* Main Content */}
       <div className="main-content">
 
+        {/* ================= SUBMIT ================= */}
         {activeTab === "submit" && (
           <div className="panel">
 
@@ -158,6 +155,13 @@ function PassengerDashboard() {
 
             <input type="file" onChange={handleFileUpload} />
 
+            {caption && (
+              <div className="ai-caption">
+                <b>AI Caption:</b>
+                <p>{caption}</p>
+              </div>
+            )}
+
             <textarea
               placeholder="Describe the issue..."
               value={description}
@@ -174,10 +178,24 @@ function PassengerDashboard() {
           </div>
         )}
 
+        {/* ================= COMPLAINTS ================= */}
         {activeTab === "complaints" && (
           <div className="panel">
 
             <h2>My Complaints</h2>
+
+            {/* 🔔 GLOBAL NOTIFICATION */}
+            {complaints.some(c => c.status === "Resolved") && (
+              <div style={{
+                background: "#16a34a",
+                color: "white",
+                padding: "10px",
+                borderRadius: "8px",
+                marginBottom: "15px"
+              }}>
+                Some of your complaints have been resolved!
+              </div>
+            )}
 
             <table>
               <thead>
@@ -189,57 +207,67 @@ function PassengerDashboard() {
                 </tr>
               </thead>
 
-             <tbody>
-  {complaints.length === 0 ? (
-    <tr>
-      <td colSpan="4" style={{ textAlign: "center", padding: "20px" }}>
-        No complaints submitted yet
-      </td>
-    </tr>
-  ) : (
-    complaints.map((c, index) => (
-      <tr key={index}>
-        <td>{c._id.slice(-5)}</td>
+              <tbody>
+                {complaints.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" style={{ textAlign: "center", padding: "20px" }}>
+                      No complaints submitted yet
+                    </td>
+                  </tr>
+                ) : (
+                  complaints.map((c, index) => (
+                    <tr key={index}>
+                      <td>{c._id.slice(-5)}</td>
 
-        {/* Transport */}
-        <td>{c.mode || "N/A"}</td>
+                      <td>{c.mode || "N/A"}</td>
 
-        {/* Issue (with color) */}
-        <td
-          style={{
-            color:
-              c.issue === "Overcrowding"
-                ? "orange"
-                :c.issue === "Delay Issue"
-                ? "blue"
-                : c.issue === "Safety Issue" || c.issue === "Safety"
-                ? "red"
-                : c.issue === "Cleanliness"
-                ? "green"
-                : "gold"
-          }}
-        >
-          {c.issue }
-        </td>
+                      {/* Issue */}
+                      <td
+                        style={{
+                          color:
+                            c.issue === "Overcrowding"
+                              ? "orange"
+                              : c.issue === "Delay Issue" || c.issue==="Delay"
+                              ? "blue"
+                              : c.issue === "Safety Issue" || c.issue === "Safety"
+                              ? "red"
+                              : c.issue === "Cleanliness" || c.issue === "Cleanliness Issue"
+                              ? "green"
+                              : "gold"
+                        }}
+                      >
+                        {c.issue}
+                      </td>
 
-        {/* Status (with color) */}
-        <td
-          style={{
-            color:
-              c.status === "Pending"
-                ? "red"
-                : c.status === "Resolved"
-                ? "lightgreen"
-                : "white"
-          }}
-        >
-          {c.status}
-        </td>
+                      {/* Status */}
+                      <td
+                        style={{
+                          color:
+                            c.status === "Pending"
+                              ? "red"
+                              : c.status === "Resolved"
+                              ? "lightgreen"
+                              : "white"
+                        }}
+                      >
+                        {c.status}
 
-      </tr>
-    ))
-  )}
-</tbody>
+                        {/* 🔥 INLINE STATUS TAG */}
+                        {c.status === "Resolved" && (
+                          <div style={{
+                            marginTop: "5px",
+                            fontSize: "12px",
+                            color: "#22c55e"
+                          }}>
+                             Issue Resolved
+                          </div>
+                        )}
+                      </td>
+
+                    </tr>
+                  ))
+                )}
+              </tbody>
 
             </table>
 
@@ -248,17 +276,14 @@ function PassengerDashboard() {
 
       </div>
 
-      {/* Complaint Details Panel */}
+      {/* DETAILS PANEL */}
       {selectedComplaint && (
         <div className="details">
-
           <h3>Complaint Details</h3>
-
-          <p><b>ID:</b> {selectedComplaint.id}</p>
-          <p><b>Transport:</b> {selectedComplaint.transport}</p>
+          <p><b>ID:</b> {selectedComplaint._id}</p>
+          <p><b>Transport:</b> {selectedComplaint.mode}</p>
           <p><b>Description:</b> {selectedComplaint.description}</p>
           <p><b>Status:</b> {selectedComplaint.status}</p>
-
         </div>
       )}
 

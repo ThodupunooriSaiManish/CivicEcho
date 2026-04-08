@@ -184,7 +184,7 @@ function PassengerDashboard() {
 
             <h2>My Complaints</h2>
 
-            {/* 🔔 GLOBAL NOTIFICATION */}
+            {/* GLOBAL NOTIFICATION */}
             {complaints.some(c => c.status === "Resolved") && (
               <div style={{
                 background: "#16a34a",

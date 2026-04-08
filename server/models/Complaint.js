@@ -29,7 +29,8 @@ const complaintSchema = new mongoose.Schema({
   // File (image/video path)
   file: {
     type: String,
-    required: true
+      default: null   // ✅ allow empty
+
   },
 
   // Confidence (store as number, not string)

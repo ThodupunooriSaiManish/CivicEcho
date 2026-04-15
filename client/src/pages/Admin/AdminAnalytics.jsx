@@ -74,7 +74,7 @@ data.forEach(c => {
 });
 
 const barData = Object.keys(issueCount).map(key => ({
-  name: key,
+  name: key.replace(" Issue", ""),
   value: issueCount[key]
 }));
 
@@ -159,7 +159,7 @@ const barData = Object.keys(issueCount).map(key => ({
 
           <BarChart width={500} height={380} data={barData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-            <XAxis dataKey="name" stroke="#cbd5f5" />
+            <XAxis dataKey="name" stroke="#cbd5f5"   />
             <YAxis stroke="#cbd5f5" allowDecimals={false} />
             <Tooltip />
 

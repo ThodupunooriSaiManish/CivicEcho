@@ -1,48 +1,54 @@
+/* ===== MAIN LAYOUT ===== */
 .passenger-dashboard {
   display: flex;
   height: 100vh;
   font-family: "Poppins", sans-serif;
-  background: #f4f6f9;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
 }
 
-/* Sidebar */
-
+/* ===== SIDEBAR ===== */
 .passenger-dashboard .sidebar {
   width: 240px;
-  background: #111827;
+  background: linear-gradient(180deg, #0f172a, #020617);
   color: white;
   padding: 25px;
   display: flex;
   flex-direction: column;
-  height: 100vh;   /* 🔥 FIX */
+  height: 100vh;
+  border-right: 1px solid rgba(255,255,255,0.05);
 }
 
 .sidebar h2 {
-  margin-bottom: 40px;
+  margin-bottom: 35px;
   font-size: 22px;
+  letter-spacing: 1px;
 }
 
+/* BUTTONS */
 .sidebar button {
   margin-bottom: 12px;
   padding: 12px;
   border: none;
-  background: transparent;
+  background: rgba(255,255,255,0.05);
   color: white;
   text-align: left;
-  font-size: 15px;
-  border-radius: 6px;
+  font-size: 14px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.3s;
 }
 
 .sidebar button:hover {
-  background: #1f2937;
+  background: rgba(59,130,246,0.25);
+  transform: translateX(5px);
 }
 
 .sidebar .active {
-  background: #2563eb;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  font-weight: 600;
 }
 
+/* USER INFO */
 .user-info {
   margin-top: auto;
   margin-bottom: 15px;
@@ -50,7 +56,7 @@
 
 .user-info p {
   font-size: 12px;
-  color: #9ca3af;
+  color: #94a3b8;
 }
 
 .user-info h4 {
@@ -58,93 +64,130 @@
   margin-top: 3px;
 }
 
+/* LOGOUT */
 .logout {
   margin-top: auto;
-  background: #ef4444 !important;
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  text-align: center;
 }
 
-/* Main Content */
+.logout:hover {
+  box-shadow: 0 4px 15px rgba(239,68,68,0.5);
+}
 
+/* ===== MAIN CONTENT ===== */
 .passenger-dashboard .main-content {
   flex: 1;
   padding: 40px;
+  overflow-y: auto;
 }
 
-/* Panel */
-
+/* ===== PANEL ===== */
 .passenger-dashboard .panel {
   background: white;
   padding: 35px;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: 0.3s;
 }
 
-/* Inputs */
+.panel:hover {
+  transform: translateY(-3px);
+}
 
+/* ===== INPUTS ===== */
 .panel select,
 .panel textarea,
 .panel input {
   width: 100%;
+   display: block;          /* 🔥 IMPORTANT */
+  box-sizing: border-box;  /* 🔥 IMPORTANT */
   margin-bottom: 16px;
-  padding: 11px;
-  border: 1px solid #dcdcdc;
-  border-radius: 6px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   font-size: 14px;
+  transition: 0.2s;
 }
 
-/* Submit Button */
+.panel input:focus,
+.panel textarea:focus,
+.panel select:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+}
 
+/* ===== SUBMIT BUTTON ===== */
 .submit-btn {
-  background: #2563eb;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
   border: none;
   padding: 13px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 15px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 .submit-btn:hover {
-  background: #1e40af;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(59,130,246,0.4);
 }
 
-/* Table */
-
+/* ===== TABLE ===== */
 .passenger-dashboard table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
 }
 
+/* HEADER */
 .passenger-dashboard th {
   text-align: left;
-  padding: 12px;
-  background: #f3f4f6;
+  padding: 14px;
+  background: #f1f5f9;
   font-weight: 600;
+  font-size: 13px;
+  color: #64748b;
+  text-transform: uppercase;
 }
 
+/* ROWS */
 .passenger-dashboard td {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
+  padding: 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.passenger-dashboard tr {
+  transition: 0.2s;
 }
 
 .passenger-dashboard tr:hover {
   background: #f9fafb;
+  transform: scale(1.01);
 }
 
+/* STATUS */
 .pending {
-  color: orange;
+  color: #f59e0b;
+  font-weight: 600;
 }
 
 .resolved {
-  color: green;
+  color: #22c55e;
+  font-weight: 600;
 }
 
-/* Complaint Details Panel */
-
+/* ===== DETAILS PANEL ===== */
 .passenger-dashboard .details {
   width: 320px;
   background: white;
   padding: 30px;
   border-left: 1px solid #e5e7eb;
+  box-shadow: -5px 0 20px rgba(0,0,0,0.05);
 }
+
